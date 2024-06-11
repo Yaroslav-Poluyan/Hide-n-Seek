@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using _CodeBase.Infrastructure.Factory.UIFactory;
+using _CodeBase.Infrastructure.StateMachine.StateControllers.MainMenu;
 using _CodeBase.Services.LevelsData;
 using UnityEngine;
 using Zenject;
@@ -9,6 +10,8 @@ namespace _CodeBase.Infrastructure.GameplayLogic.MainMenu
 {
     public class UILevelsPanelController : MonoBehaviour
     {
+        [SerializeField] private MainMenuSceneController _mainMenuSceneController;
+        [SerializeField] private MainMenuStateMediator _mainMenuStateMediator;
         [SerializeField] private float _colsCount = 3;
         [SerializeField] private Transform _rowsParent;
         [SerializeField] private List<LevelBlock> _allCreatedBlocks;
@@ -20,7 +23,13 @@ namespace _CodeBase.Infrastructure.GameplayLogic.MainMenu
             InitializeBlocks();
         }
 
-        private async Task InitializeBlocks()
+        public async Task InitializeBlocks()
+        {
+            await SpawnBlocks();
+            _mainMenuStateMediator.OnUIBlocksInitialized();
+        }
+
+        private async Task SpawnBlocks()
         {
             var levelDatas = _levelsDataService.GetLevelDatas();
             var rowsCount = Mathf.CeilToInt(levelDatas.Count / _colsCount);

@@ -4,6 +4,6 @@ namespace _CodeBase.Services.Curtain
 {
     public class LoadingSceneCurtain : LoadingCurtainBase, ISceneLoadingCurtain
     {
-        
+       
     }
 }

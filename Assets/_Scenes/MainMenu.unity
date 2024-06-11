@@ -649,6 +649,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2abe33a3f7547e4181b2afccb70fce2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _mainMenuSceneController: {fileID: 1078134150}
+  _mainMenuStateMediator: {fileID: 2012562413}
   _colsCount: 3
   _rowsParent: {fileID: 1508164884}
   _allCreatedBlocks: []

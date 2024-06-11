@@ -28,10 +28,10 @@ namespace _CodeBase.Infrastructure
             BindInfrastructureFactory();
             BindCoroutineRunner();
             BindAssetProvider();
+            await BindLoadingSceneCurtain();
             await BindStaticDataService();
             await BindLevelDatasService();
             BindPlayerProgressData();
-            await BindLoadingSceneCurtain();
             await BindSceneReferencesSO();
             BindSceneLoader();
             BindInputService();
@@ -151,7 +151,7 @@ namespace _CodeBase.Infrastructure
             var assetProvider = container.Resolve<IAssetProvider>();
             var prefab = await assetProvider.LoadAs<LoadingSceneCurtain>(AssetsPaths.LoadingSceneCurtain);
             var loadingCurtain = Instantiate(prefab);
-            loadingCurtain.HideForce();
+            loadingCurtain.ShowForce();
             return loadingCurtain;
         }
 
