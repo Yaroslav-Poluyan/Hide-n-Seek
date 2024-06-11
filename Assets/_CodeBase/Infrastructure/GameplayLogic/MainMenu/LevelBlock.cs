@@ -49,7 +49,7 @@ namespace _CodeBase.Infrastructure.GameplayLogic.MainMenu
         public void SetAvailable(bool isAvailable)
         {
             _unavailableImageAlarm.gameObject.SetActive(!isAvailable);
-            _button.interactable = isAvailable;
+            _button.interactable = isAvailable && _button.interactable;
         }
     }
 }
