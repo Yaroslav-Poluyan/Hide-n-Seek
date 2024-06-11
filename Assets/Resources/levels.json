@@ -1,0 +1,87 @@
+{
+    "$id": 0,
+    "$type": "0|System.Collections.Generic.List`1[[_CodeBase.Services.LevelsData.LevelData, Assembly-CSharp]], mscorlib",
+    "$rlength": 10,
+    "$rcontent": [
+        {
+            "$id": 1,
+            "$type": "1|_CodeBase.Services.LevelsData.LevelData, Assembly-CSharp",
+            "Id": 1,
+            "imageUrl": "https://picsum.photos/seed/1/1920/1080",
+            "imageName": "Level 1",
+            "counter": 15
+        },
+        {
+            "$id": 2,
+            "$type": 1,
+            "Id": 2,
+            "imageUrl": "https://picsum.photos/seed/2/1920/1080",
+            "imageName": "Level 2",
+            "counter": 20
+        },
+        {
+            "$id": 3,
+            "$type": 1,
+            "Id": 3,
+            "imageUrl": "https://picsum.photos/seed/3/1920/1080",
+            "imageName": "Level 3",
+            "counter": 18
+        },
+        {
+            "$id": 4,
+            "$type": 1,
+            "Id": 4,
+            "imageUrl": "https://picsum.photos/seed/4/1920/1080",
+            "imageName": "Level 4",
+            "counter": 22
+        },
+        {
+            "$id": 5,
+            "$type": 1,
+            "Id": 5,
+            "imageUrl": "https://picsum.photos/seed/5/1920/1080",
+            "imageName": "Level 5",
+            "counter": 25
+        },
+        {
+            "$id": 6,
+            "$type": 1,
+            "Id": 6,
+            "imageUrl": "https://picsum.photos/seed/6/1920/1080",
+            "imageName": "Level 6",
+            "counter": 17
+        },
+        {
+            "$id": 7,
+            "$type": 1,
+            "Id": 7,
+            "imageUrl": "https://picsum.photos/seed/7/1920/1080",
+            "imageName": "Level 7",
+            "counter": 19
+        },
+        {
+            "$id": 8,
+            "$type": 1,
+            "Id": 8,
+            "imageUrl": "https://picsum.photos/seed/8/1920/1080",
+            "imageName": "Level 8",
+            "counter": 23
+        },
+        {
+            "$id": 9,
+            "$type": 1,
+            "Id": 9,
+            "imageUrl": "https://picsum.photos/seed/9/1920/1080",
+            "imageName": "Level 9",
+            "counter": 21
+        },
+        {
+            "$id": 10,
+            "$type": 1,
+            "Id": 10,
+            "imageUrl": "https://picsum.photos/seed/10/1920/1080",
+            "imageName": "Level 10",
+            "counter": 27
+        }
+    ]
+}

@@ -9,6 +9,7 @@ using _CodeBase.Infrastructure.StateMachine.States;
 using _CodeBase.Services;
 using _CodeBase.Services.Curtain;
 using _CodeBase.Services.Input;
+using _CodeBase.Services.LevelsData;
 using _CodeBase.StaticData.StaticData;
 using UnityEngine;
 using Zenject;
@@ -28,6 +29,7 @@ namespace _CodeBase.Infrastructure
             BindCoroutineRunner();
             BindAssetProvider();
             await BindStaticDataService();
+            await BindLevelDatasService();
             BindPlayerProgressData();
             await BindLoadingSceneCurtain();
             await BindSceneReferencesSO();
@@ -40,6 +42,16 @@ namespace _CodeBase.Infrastructure
             BindGameStateMachine();
             BindGame();
             EnterToBootstrapState();
+        }
+
+        private async Task BindLevelDatasService()
+        {
+            Container.Bind<ILevelsDataService>()
+                .To<LevelsDataService>()
+                .AsSingle()
+                .NonLazy();
+            var service = Container.Resolve<ILevelsDataService>();
+            await service.LoadLevelsDataAsync();
         }
 
         public override void Start()

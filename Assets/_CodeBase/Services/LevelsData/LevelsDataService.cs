@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using _CodeBase.Infrastructure.AssetManagement;
+using Sirenix.Serialization;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -8,7 +10,7 @@ namespace _CodeBase.Services.LevelsData
 {
     internal class LevelsDataService : ILevelsDataService
     {
-        public List<LevelData> levels = new List<LevelData>();
+        public List<LevelData> levels = new();
 
         public async Task LoadLevelsDataAsync()
         {
@@ -26,17 +28,19 @@ namespace _CodeBase.Services.LevelsData
 
         void ParseLevelsFromJson(string jsonString)
         {
-            levels = new List<LevelData>(JsonUtility.FromJson<LevelData[]>(jsonString));
+            var bytes = Encoding.UTF8.GetBytes(jsonString);
+            var levelDataList = SerializationUtility.DeserializeValue<List<LevelData>>(bytes, DataFormat.JSON);
+            levels = new List<LevelData>(levelDataList);
         }
 
-        async Task LoadLevelImagesAsync()
+        private async Task LoadLevelImagesAsync()
         {
             foreach (var level in levels)
             {
                 try
                 {
                     var texture = await LoadTextureFromUrlAsync(level.imageUrl);
-                    //todo: dont forget to assign texture to level object
+                    // todo: don't forget to assign texture to level object
                 }
                 catch (System.Exception ex)
                 {
@@ -45,7 +49,7 @@ namespace _CodeBase.Services.LevelsData
             }
         }
 
-        async Task<string> LoadTextFromUrlAsync(string url)
+        private async Task<string> LoadTextFromUrlAsync(string url)
         {
             using var request = UnityWebRequest.Get(url);
             request.SendWebRequest();
@@ -60,7 +64,7 @@ namespace _CodeBase.Services.LevelsData
             return request.downloadHandler.text;
         }
 
-        async Task<Texture2D> LoadTextureFromUrlAsync(string url)
+        private async Task<Texture2D> LoadTextureFromUrlAsync(string url)
         {
             using var request = UnityWebRequestTexture.GetTexture(url);
             request.SendWebRequest();
