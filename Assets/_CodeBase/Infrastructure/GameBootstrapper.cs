@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using _CodeBase.Infrastructure.AssetManagement;
 using _CodeBase.Infrastructure.Factory.Game;
 using _CodeBase.Infrastructure.Factory.InfrastructureFactories;
@@ -18,25 +19,27 @@ using UnityEngine;
 using Zenject;
 using PlayerProgressData = _CodeBase.StaticData.PlayerProgressData.PlayerProgressData;
 
-// ReSharper disable Unity.PerformanceCriticalCodeInvocation
-
 namespace _CodeBase.Infrastructure
 {
     public class GameBootstrapper : MonoInstaller, ICoroutineRunner
     {
         private Game _game;
 
+        private CancellationTokenSource _cancellationTokenSource;
+
         public override async void InstallBindings()
         {
+            _cancellationTokenSource = new CancellationTokenSource();
+
             BindInfrastructureFactory();
             BindCoroutineRunner();
             BindAssetProvider();
-            await BindAlarmService();
-            await BindLoadingSceneCurtain();
-            await BindStaticDataService();
-            await BindLevelDatasService();
+            await BindAlarmService(_cancellationTokenSource.Token);
+            await BindLoadingSceneCurtain(_cancellationTokenSource.Token);
+            await BindStaticDataService(_cancellationTokenSource.Token);
+            await BindLevelDatasService(_cancellationTokenSource.Token);
             BindPlayerProgressData();
-            await BindSceneReferencesSO();
+            await BindSceneReferencesSO(_cancellationTokenSource.Token);
             BindSceneLoader();
             BindInputService();
             BindGameFactory();
@@ -48,6 +51,12 @@ namespace _CodeBase.Infrastructure
             BindGameStateMachine();
             BindGame();
             EnterToBootstrapState();
+        }
+
+        private void OnDestroy()
+        {
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource.Dispose();
         }
 
         private void BindLevelController()
@@ -66,18 +75,14 @@ namespace _CodeBase.Infrastructure
                 .NonLazy();
         }
 
-        private async Task BindLevelDatasService()
+        private async Task BindLevelDatasService(CancellationToken cancellationToken)
         {
             Container.Bind<ILevelsDataService>()
                 .To<LevelsDataService>()
                 .AsSingle()
                 .NonLazy();
             var service = Container.Resolve<ILevelsDataService>();
-            await service.LoadLevelsDataAsync();
-        }
-
-        public override void Start()
-        {
+            await service.LoadLevelsDataAsync(cancellationToken);
         }
 
         private void BindTimeManager()
@@ -119,19 +124,19 @@ namespace _CodeBase.Infrastructure
             .AsSingle()
             .NonLazy();
 
-        private async Task BindStaticDataService()
+        private async Task BindStaticDataService(CancellationToken cancellationToken)
         {
             Container.Bind<IStaticDataService>()
                 .To<StaticDataService>()
                 .AsSingle()
                 .NonLazy();
             var service = Container.Resolve<IStaticDataService>();
-            await service.Load();
+            await service.Load(cancellationToken);
         }
 
-        private async Task BindSceneReferencesSO()
+        private async Task BindSceneReferencesSO(CancellationToken cancellationToken)
         {
-            var sceneLoaderReferencesSO = await LoadSceneLoaderReferencesSO(Container);
+            var sceneLoaderReferencesSO = await LoadSceneLoaderReferencesSO(Container, cancellationToken);
             Container.Bind<SceneLoaderReferencesSO>()
                 .FromInstance(sceneLoaderReferencesSO)
                 .AsSingle()
@@ -159,45 +164,50 @@ namespace _CodeBase.Infrastructure
                 .AsSingle()
                 .NonLazy();
 
-        private async Task BindLoadingSceneCurtain()
+        private async Task BindLoadingSceneCurtain(CancellationToken cancellationToken)
         {
-            var curtain = await CreateLoadingSceneCurtain(Container);
+            var curtain = await CreateLoadingSceneCurtain(Container, cancellationToken);
             Container.Bind<ISceneLoadingCurtain>()
                 .FromInstance(curtain)
                 .AsSingle()
                 .NonLazy();
         }
 
-        private async Task<LoadingSceneCurtain> CreateLoadingSceneCurtain(DiContainer container)
+        private async Task<LoadingSceneCurtain> CreateLoadingSceneCurtain(DiContainer container,
+            CancellationToken cancellationToken)
         {
             var assetProvider = container.Resolve<IAssetProvider>();
-            var prefab = await assetProvider.LoadAs<LoadingSceneCurtain>(AssetsPaths.LoadingSceneCurtain);
-            var loadingCurtain = Instantiate(prefab);
+            var prefab =
+                await assetProvider.LoadAs<LoadingSceneCurtain>(AssetsPaths.LoadingSceneCurtain, cancellationToken);
+            var loadingCurtain = Instantiate(prefab, transform);
             loadingCurtain.ShowForce();
             return loadingCurtain;
         }
 
-        private async Task BindAlarmService()
+        private async Task BindAlarmService(CancellationToken cancellationToken)
         {
-            var badConnectionAlarm = await CreateBadConnectionAlarm(Container);
+            var badConnectionAlarm = await CreateBadConnectionAlarm(Container, cancellationToken);
             Container.Bind<BadConnectionAlarm>()
                 .FromInstance(badConnectionAlarm)
                 .AsSingle()
                 .NonLazy();
         }
 
-        private async Task<BadConnectionAlarm> CreateBadConnectionAlarm(DiContainer container)
+        private async Task<BadConnectionAlarm> CreateBadConnectionAlarm(DiContainer container,
+            CancellationToken cancellationToken)
         {
             var assetProvider = container.Resolve<IAssetProvider>();
-            var prefab = await assetProvider.LoadAs<BadConnectionAlarm>(AssetsPaths.BadConnectionAlarm);
-            var badConnectionAlarm = Instantiate(prefab);
+            var prefab =
+                await assetProvider.LoadAs<BadConnectionAlarm>(AssetsPaths.BadConnectionAlarm, cancellationToken);
+            var badConnectionAlarm = Instantiate(prefab, transform);
             return badConnectionAlarm;
         }
 
-        private async Task<SceneLoaderReferencesSO> LoadSceneLoaderReferencesSO(DiContainer container)
+        private async Task<SceneLoaderReferencesSO> LoadSceneLoaderReferencesSO(DiContainer container,
+            CancellationToken cancellationToken)
         {
             var so = await container.Resolve<IAssetProvider>()
-                .LoadAs<SceneLoaderReferencesSO>(AssetsPaths.SceneReferencesSO);
+                .LoadAs<SceneLoaderReferencesSO>(AssetsPaths.SceneReferencesSO, cancellationToken);
             return so;
         }
 

@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -15,7 +16,7 @@ namespace _CodeBase.Infrastructure.AssetManagement
             return handle.Result;
         }
 
-        public async Task<TValue> LoadAs<TValue>(string assetPath) where TValue : Object
+        public async Task<TValue> LoadAs<TValue>(string assetPath, CancellationToken cancellationToken) where TValue : Object
         {
             if (assetPath.EndsWith(".prefab"))
             {

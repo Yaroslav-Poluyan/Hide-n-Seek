@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using _CodeBase.Infrastructure.AssetManagement;
 using _CodeBase.Services.BadConnectionsAlarm;
@@ -19,7 +20,7 @@ namespace _CodeBase.Services.LevelsData
             _badConnectionAlarm = badConnectionAlarm;
         }
 
-        public async Task LoadLevelsDataAsync()
+        public async Task LoadLevelsDataAsync(CancellationToken cancellationToken)
         {
             try
             {

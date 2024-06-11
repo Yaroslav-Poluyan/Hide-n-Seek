@@ -6,10 +6,12 @@ namespace _CodeBase.Services.BadConnectionsAlarm
     {
         public void Show()
         {
+            gameObject.SetActive(true);
         }
 
         public void Hide()
         {
+            gameObject.SetActive(false);
         }
     }
 }

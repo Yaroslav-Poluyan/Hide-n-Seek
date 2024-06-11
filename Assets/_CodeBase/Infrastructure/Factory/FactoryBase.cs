@@ -74,7 +74,8 @@ namespace _CodeBase.Infrastructure.Factory
 
         private async Task<TValue> Load<TValue>(string assetPath) where TValue : Object
         {
-            return await assetProvider.LoadAs<TValue>(assetPath);
+            var cancellationToken = new System.Threading.CancellationToken();
+            return await assetProvider.LoadAs<TValue>(assetPath, cancellationToken);
         }
     }
 }
