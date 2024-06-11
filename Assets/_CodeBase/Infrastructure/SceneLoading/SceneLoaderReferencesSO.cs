@@ -22,12 +22,9 @@ namespace _CodeBase.Infrastructure.SceneLoading
     public enum SceneType
     {
         None = 0,
-        Bootstrapper = 1,
-        InitialLoading = 2,
-        MainMenu = 3,
-        Settings = 5,
-        Controls = 6,
-        Audio = 7,
+        Bootstrapper = 2,
+        MainMenu = 4,
+        Game = 8,
     }
 
     public static class SceneTypeExtensions

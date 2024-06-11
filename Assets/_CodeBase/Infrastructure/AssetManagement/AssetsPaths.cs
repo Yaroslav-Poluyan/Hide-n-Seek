@@ -7,5 +7,6 @@ namespace _CodeBase.Infrastructure.AssetManagement
         public static string LevelsDataURL = "https://raw.githubusercontent.com/Yaroslav-Poluyan/FilesCloud/main/levels.json\n";
         public static string UILevelRow = "Row.prefab";
         public static string UILevelBlock = "LevelBlock.prefab";
+        public static string BadConnectionAlarm = "BadConnectionAlarm.prefab";
     }
 }

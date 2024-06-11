@@ -3,7 +3,7 @@ using _CodeBase.Services.Curtain;
 using UnityEngine;
 using Zenject;
 
-namespace _CodeBase.Infrastructure.StateMachine.StateMediators
+namespace _CodeBase.Infrastructure.StateMachine.StateControllers
 {
     public abstract class StateMediatorBase<TState> : MonoBehaviour where TState : class, IExitableState
     {
@@ -13,11 +13,6 @@ namespace _CodeBase.Infrastructure.StateMachine.StateMediators
 
         protected virtual void Awake()
         {
-            if (StateMachine.CurrentStateType != typeof(TState))
-            {
-                Debug.LogError("Current state is not " + typeof(TState).Name);
-            }
-
             state = StateMachine.GetState<TState>();
             Initialization();
         }

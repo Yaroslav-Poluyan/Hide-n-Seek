@@ -1,7 +1,7 @@
 {
     "$id": 0,
     "$type": "0|System.Collections.Generic.List`1[[_CodeBase.Services.LevelsData.LevelData, Assembly-CSharp]], mscorlib",
-    "$rlength": 10,
+    "$rlength": 11,
     "$rcontent": [
         {
             "$id": 1,
@@ -82,6 +82,14 @@
             "imageUrl": "https://picsum.photos/seed/10/1920/1080",
             "imageName": "Level 10",
             "counter": 27
+        },
+        {
+            "$id": 11,
+            "$type": 1,
+            "Id": 11,
+            "imageUrl": "https://picsum.photos/seed/10/1920/pageNotFoundBrokenUrl",
+            "imageName": "Level 11",
+            "counter": 15
         }
     ]
 }

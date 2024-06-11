@@ -7,9 +7,12 @@ using _CodeBase.Infrastructure.SceneLoading;
 using _CodeBase.Infrastructure.StateMachine;
 using _CodeBase.Infrastructure.StateMachine.States;
 using _CodeBase.Services;
+using _CodeBase.Services.BadConnectionsAlarm;
 using _CodeBase.Services.Curtain;
 using _CodeBase.Services.Input;
+using _CodeBase.Services.LevelController;
 using _CodeBase.Services.LevelsData;
+using _CodeBase.Services.WebRequests;
 using _CodeBase.StaticData.StaticData;
 using UnityEngine;
 using Zenject;
@@ -28,6 +31,7 @@ namespace _CodeBase.Infrastructure
             BindInfrastructureFactory();
             BindCoroutineRunner();
             BindAssetProvider();
+            await BindAlarmService();
             await BindLoadingSceneCurtain();
             await BindStaticDataService();
             await BindLevelDatasService();
@@ -37,11 +41,29 @@ namespace _CodeBase.Infrastructure
             BindInputService();
             BindGameFactory();
             BindUIFactory();
+            BindImageDownloader();
             BindTimeManager();
+            BindLevelController();
             _game = new Game(Container.Resolve<IInfrastructureFactory>());
             BindGameStateMachine();
             BindGame();
             EnterToBootstrapState();
+        }
+
+        private void BindLevelController()
+        {
+            Container.Bind<LevelController>()
+                .To<LevelController>()
+                .AsSingle()
+                .NonLazy();
+        }
+
+        private void BindImageDownloader()
+        {
+            Container.Bind<IImageDownloaderService>()
+                .To<ImageDownloaderService>()
+                .AsSingle()
+                .NonLazy();
         }
 
         private async Task BindLevelDatasService()
@@ -155,6 +177,23 @@ namespace _CodeBase.Infrastructure
             return loadingCurtain;
         }
 
+        private async Task BindAlarmService()
+        {
+            var badConnectionAlarm = await CreateBadConnectionAlarm(Container);
+            Container.Bind<BadConnectionAlarm>()
+                .FromInstance(badConnectionAlarm)
+                .AsSingle()
+                .NonLazy();
+        }
+
+        private async Task<BadConnectionAlarm> CreateBadConnectionAlarm(DiContainer container)
+        {
+            var assetProvider = container.Resolve<IAssetProvider>();
+            var prefab = await assetProvider.LoadAs<BadConnectionAlarm>(AssetsPaths.BadConnectionAlarm);
+            var badConnectionAlarm = Instantiate(prefab);
+            return badConnectionAlarm;
+        }
+
         private async Task<SceneLoaderReferencesSO> LoadSceneLoaderReferencesSO(DiContainer container)
         {
             var so = await container.Resolve<IAssetProvider>()
@@ -169,6 +208,7 @@ namespace _CodeBase.Infrastructure
                 .AsSingle()
                 .NonLazy();
         }
+
         private IInputService RegisterInputService()
         {
             return Container.Instantiate<InputServiceBase>();

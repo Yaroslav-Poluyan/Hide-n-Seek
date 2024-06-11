@@ -1059,6 +1059,7 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
+  _mainMenuStateMediator: {fileID: 2012562413}
 --- !u!1 &1297537154
 GameObject:
   m_ObjectHideFlags: 0

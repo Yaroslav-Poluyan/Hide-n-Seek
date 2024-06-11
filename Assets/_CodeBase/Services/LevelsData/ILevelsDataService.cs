@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace _CodeBase.Services.LevelsData
 {
-    internal interface ILevelsDataService
+    public interface ILevelsDataService
     {
         public List<LevelData> GetLevelDatas();
         Task LoadLevelsDataAsync();

@@ -2,15 +2,22 @@
 using System.Text;
 using System.Threading.Tasks;
 using _CodeBase.Infrastructure.AssetManagement;
+using _CodeBase.Services.BadConnectionsAlarm;
 using Sirenix.Serialization;
 using UnityEngine;
 using UnityEngine.Networking;
 
 namespace _CodeBase.Services.LevelsData
 {
-    internal class LevelsDataService : ILevelsDataService
+    public class LevelsDataService : ILevelsDataService
     {
+        private readonly BadConnectionAlarm _badConnectionAlarm;
         public List<LevelData> levels = new();
+
+        public LevelsDataService(BadConnectionAlarm badConnectionAlarm)
+        {
+            _badConnectionAlarm = badConnectionAlarm;
+        }
 
         public async Task LoadLevelsDataAsync()
         {
@@ -18,11 +25,14 @@ namespace _CodeBase.Services.LevelsData
             {
                 var jsonString = await LoadTextFromUrlAsync(AssetsPaths.LevelsDataURL);
                 ParseLevelsFromJson(jsonString);
-                await LoadLevelImagesAsync();
+                //await LoadLevelImagesAsync();
             }
             catch (System.Exception ex)
             {
                 Debug.LogError("Error loading levels: " + ex.Message);
+                _badConnectionAlarm.Show();
+                await Task.Delay(5000);
+                Application.Quit();
             }
         }
 
@@ -33,21 +43,6 @@ namespace _CodeBase.Services.LevelsData
             levels = new List<LevelData>(levelDataList);
         }
 
-        private async Task LoadLevelImagesAsync()
-        {
-            foreach (var level in levels)
-            {
-                try
-                {
-                    var texture = await LoadTextureFromUrlAsync(level.imageUrl);
-                    // todo: don't forget to assign texture to level object
-                }
-                catch (System.Exception ex)
-                {
-                    Debug.LogError("Error loading level image: " + ex.Message);
-                }
-            }
-        }
 
         private async Task<string> LoadTextFromUrlAsync(string url)
         {

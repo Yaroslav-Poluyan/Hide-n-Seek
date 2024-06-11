@@ -13,18 +13,16 @@ namespace _CodeBase.Infrastructure.StateMachine.States
         private readonly GameStateMachine _stateMachine;
         private readonly IGameFactory _gameFactory;
         private readonly ISceneLoadingCurtain _sceneLoadingCurtain;
-        private readonly TimeManagerService _timeManagerService;
         private readonly PlayerProgressData _playerProgressData;
 
 
         public GameLoopState(GameStateMachine stateMachine, IGameFactory gameFactory,
-            ISceneLoadingCurtain sceneLoadingCurtain, TimeManagerService timeManagerService,
+            ISceneLoadingCurtain sceneLoadingCurtain,
             PlayerProgressData playerProgressData) : base(stateMachine)
         {
             _stateMachine = stateMachine;
             _gameFactory = gameFactory;
             _sceneLoadingCurtain = sceneLoadingCurtain;
-            _timeManagerService = timeManagerService;
             _playerProgressData = playerProgressData;
         }
 
@@ -32,15 +30,16 @@ namespace _CodeBase.Infrastructure.StateMachine.States
         {
             await base.Exit();
             Debug.Log("Exit GameLoopState");
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
         }
 
         public void Enter()
         {
+            _sceneLoadingCurtain.Hide();
             Debug.Log("Enter GameLoopState");
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+        }
+
+        public void OnImageLoaded()
+        {
             _sceneLoadingCurtain.Hide();
         }
     }

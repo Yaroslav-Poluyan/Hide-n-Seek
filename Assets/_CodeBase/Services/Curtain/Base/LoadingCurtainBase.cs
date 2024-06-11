@@ -35,13 +35,14 @@ namespace _CodeBase.Services.Curtain.Base
         }
 
 
-        public void Show()
+        public async Task Show()
         {
             _progressSlider.value = 0f;
             gameObject.SetActive(true);
             _animator.SetTrigger(Showhash);
             SetProgress(0);
             IsActive = true;
+            await Task.Delay((int)_animator.GetCurrentAnimatorStateInfo(0).length * 1000);
         }
 
         public void ShowForce()
